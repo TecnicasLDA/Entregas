@@ -9,5 +9,5 @@ Entregas TyHM 1
     <li> López, Bernardo </li>
 </ul>
 
-    <a>https://github.com/TecnicasLDA/TP1_2022 </a>
+    <a> https://github.com/TecnicasLDA/TP1_2022 </a>
 </html>
