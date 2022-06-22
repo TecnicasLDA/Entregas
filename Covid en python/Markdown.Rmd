@@ -1,0 +1,291 @@
+---
+title: "Progresión geométrica del Covid 19 - Programación en Python"
+author: 
+- Aruani, Juan^[juan.aruani.99@gmail.com]
+- De Mezzo, Facundo^[em.cn.demezzo.facundo@gmail.com]
+- López, Emilia^[emilia.lop49@gmail.com]
+- López, Bernardo^[bernilopezmorel@gmail.com]
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(knitr)
+library(reticulate)
+
+knitr::knit_engines$set(python = reticulate::eng_python) 
+
+use_python("C:/Users/juana/AppData/Local/Programs/Python/Python310/python.exe")
+
+```
+
+# Introducción
+
+A lo largo de este documento se procede a realizar un análisis de el comportamiento del Covid 19 mediante el uso del lenguaje Python
+
+## 1. Lectura de datos desde un CSV
+
+Para empezar, se importa la librería "csv" para poder trabajar con los datos correspondientes, y se los lee^[El archivo del que se extrae la información debe estár en la misma carpeta que el programa para poder obtener la información].
+
+Se procede a importar la información y a mostrar los encabezados y las primeras filas para corroborar.
+Notese que se debe específicar el delimitador específico ";" en caso de que no sea una coma ",".
+
+
+```{python}
+
+import csv
+
+with open('casos.csv') as info:
+  reader = csv.reader(info,delimiter=";")
+  
+  contador = 0
+  
+  
+  for fila in reader:
+    print(fila)
+    
+    if contador > 5:
+      break
+    
+    contador +=1
+
+```
+
+
+## 2. Gráfico de la cantidad de casos
+
+Se presenta un gráfico con la cantidad de contagios en las  fechas correspondientes
+
+```{python}
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+      reader = csv.reader(info, delimiter=";")
+      next(reader)
+      next(reader)
+      i=0
+      fechas=[]
+      casos=[]
+      for fila in reader:
+          fechas.append(fila[0])
+          casos.append(fila[1])
+          i += 1
+
+
+pplot.figure(figsize=(20, 10))
+pplot.plot_date(fechas,casos)
+pplot.grid(visible=True)
+#pplot.show()
+pplot.savefig("Gráfica de casos.jpg")
+
+```
+![output](gráfica de casos.jpg)
+
+
+## 3. Histograma de contagios
+
+
+```{python}
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+    reader = csv.reader(info, delimiter=";")
+    next(reader)
+    next(reader)
+    i=0
+    fechas=[]
+    casos=[]
+    for fila in reader:
+        fechas.append(fila[0])
+        casos.append(fila[1])
+        i += 1
+
+
+pplot.figure(figsize=(20, 10))
+pplot.grid(visible=True)
+pplot.hist(casos,rwidth=0.5, label="Histograma de casos Covid 19")
+#pplot.show()
+pplot.savefig("Histograma de casos.png")
+
+```
+![output](Histograma de casos.png)
+
+
+
+## 4. Densidad de casos
+
+```{python}
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+    reader = csv.reader(info, delimiter=";")
+    next(reader)
+    next(reader)
+    i=0
+    fechas=[]
+    casos=[]
+    for fila in reader:
+        fechas.append(fila[0])
+        casos.append(fila[1])
+        i += 1
+
+
+
+#Cambiamos el tipo de variable
+
+casosnum=[]
+for caso in casos:
+    casosnum.append(float(caso))
+
+
+fig = pd.DataFrame(casosnum).plot(kind='density',title="Densidad de casos").get_figure()
+fig.savefig('Densidad de casos.png')
+
+
+```
+
+![output](Densidad de casos.png)
+
+## 5. Estadística de casos
+
+```{python}
+
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+    reader = csv.reader(info, delimiter=";")
+    next(reader)
+    next(reader)
+    i=0
+    fechas=[]
+    casos=[]
+    for fila in reader:
+        fechas.append(fila[0])
+        casos.append(fila[1])
+        i += 1
+
+
+
+#Cambiamos el tipo de variable
+
+casosnum=[]
+for caso in casos:
+    casosnum.append(float(caso))
+    
+    
+df = pd.DataFrame(casosnum)
+print(df.describe())
+
+
+```
+
+## 6. Cálculo del factor de contagios
+
+Se puede calcular el factor de contagios F mediante el cociente entre los infectados de hoy y los de ayer
+
+$$ F= I_{n+1}/I_n $$
+
+```{python}
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+    reader = csv.reader(info, delimiter=";")
+    next(reader)
+    next(reader)
+    i=0
+    fechas=[]
+    casos=[]
+    for fila in reader:
+        fechas.append(fila[0])
+        casos.append(fila[1])
+        i += 1
+
+
+
+#Cambiamos el tipo de variable
+
+casosnum=[]
+for caso in casos:
+    casosnum.append(float(caso))
+    
+    
+m = len(casosnum)
+F=[]
+for i in range(0,m):
+    F.append((casosnum[i])/(casosnum[i-1]))
+
+
+n=len(F)-1
+print("El Factor de contagios el último día registrado es:")
+print(F[n])
+
+```
+
+## 7. Estadísticos de F
+
+```{python}
+
+import csv
+import pandas as pd
+from matplotlib import pyplot as pplot
+
+with open('casos.csv') as info:
+    reader = csv.reader(info, delimiter=";")
+    next(reader)
+    next(reader)
+    i=0
+    fechas=[]
+    casos=[]
+    for fila in reader:
+        fechas.append(fila[0])
+        casos.append(fila[1])
+        i += 1
+
+
+
+#Cambiamos el tipo de variable
+
+casosnum=[]
+for caso in casos:
+    casosnum.append(float(caso))
+    
+    
+m = len(casosnum)
+F=[]
+for i in range(0,m):
+    F.append((casosnum[i])/(casosnum[i-1]))
+
+
+dfactor = pd.DataFrame(casosnum)
+print(dfactor.describe())
+
+
+```
+
+
+
+
+
+
+
+
+
